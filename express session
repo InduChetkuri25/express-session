@@ -1,0 +1,48 @@
+// app . js
+const express = require('express') ;
+const session = require('express-session') ;
+const app = express() ;
+const port = 3000;
+// Configure session middleware
+app.use (
+    session ({
+    secret : 'your - secret - key' , // Replace with a secure ,    random secret
+    resave : false , // Don ’ t save session if unmodified
+    saveUninitialized : false , // Don ’ t create session until something is stored
+    cookie : {
+    maxAge : 60000 // Set cookie expiration time in ms ( optional )
+    }
+    })
+);
+app.get ('/', (req , res)=> {
+res.send ('Session example') ;
+});
+// Example route to set a session variable
+app.get('/login', (req, res) => {
+    req.session.user = { username: 'vijay' };  // Store data in session
+    res.send('User logged in!');
+});
+
+// Example route to get session data
+app.get('/profile', (req, res) => {
+    if (req.session.user) {
+        res.send(`Welcome, ${req.session.user.username}!`);  // Access session data
+    } else {
+        res.send('Please log in first.');
+    }
+});
+
+// Example route to destroy the session
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.send('Error logging out.');
+        }
+        res.send('Logged out successfully.');
+    });
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
